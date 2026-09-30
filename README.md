@@ -9,6 +9,7 @@ A small Flask site that shows each invited recipient only their own plain text m
 - `migrations/`: committed Alembic migrations
 - `tests/`: PostgreSQL-backed tests
 - `wsgi.py`: Gunicorn and Flask CLI entry point
+- `railpack.json`: explicit Gunicorn start command for Railway's Railpack builder
 
 ## Local setup
 
@@ -49,7 +50,7 @@ Set `TEST_DATABASE_URL` to an isolated PostgreSQL database named `appreciation_s
 
 1. Push this source to a **private GitHub repository**, without `.env` or CSV files. Create a Railway project with one service from that repository and one PostgreSQL service. Keep PostgreSQL private.
 2. On the web service, set `DATABASE_URL` to `${{Postgres.DATABASE_URL}}` using a Railway reference variable, set a long random `SECRET_KEY`, and set `APP_ENV=production`.
-3. Set the **pre-deploy command** to `flask --app wsgi:app db upgrade` and the **start command** to `gunicorn --workers 1 --bind 0.0.0.0:$PORT wsgi:app`. Railpack builds the Python dependencies from `requirements.txt`.
+3. Set the **pre-deploy command** to `flask --app wsgi:app db upgrade`. The committed `railpack.json` supplies the Gunicorn start command; a start command set in Railway service settings should use `gunicorn --workers 1 --bind 0.0.0.0:$PORT wsgi:app`. Railpack builds the Python dependencies from `requirements.txt`.
 4. Set the health check path to `/health`, then generate a public domain for the web service. `/health` returns 200 only while PostgreSQL is reachable; otherwise it returns 503.
 
 The initial deployment uses one Gunicorn service with one worker. It needs no Redis or background jobs. Railway can deploy new commits from the linked GitHub branch automatically.
