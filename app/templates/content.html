@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Your message · A message for you{% endblock %}
+{% block main %}
+<article class="card message-card" aria-labelledby="page-title">
+  <div class="card-top">
+    <p class="eyebrow">A personal note</p>
+    <form method="post" action="{{ url_for('site.logout') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="text-button" type="submit">Sign out</button>
+    </form>
+  </div>
+  <h1 id="page-title">For {{ user.name }}</h1>
+  <div class="message">{{ user.content }}</div>
+</article>
+{% endblock %}
